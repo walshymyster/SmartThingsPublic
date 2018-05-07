@@ -42,28 +42,24 @@ metadata {
 				attributeState("multiStatus", label:'${currentValue}')
 			}
 			tileAttribute("device.thermostatMode", key: "OPERATING_STATE") {
-				attributeState("off", backgroundColor:"#ffffff")
+				attributeState("off", backgroundColor:"#ffffff", icon: "https://raw.githubusercontent.com/ClassicGOD/SmartThingsPublic/master/devicetypes/classicgod/fibaro-heat-controller.src/images/miami_off.png")
 				attributeState("heat", backgroundColor:"#e86d13")
 				attributeState("auto", backgroundColor:"#00a0dc")
 			}
 		}
 		
 		standardTile("off", "device.thermostatMode", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Off', action:"off", backgroundColor:"#ffffff"
-			state "off", label:'Off', action:"refreshMode", backgroundColor:"#cccccc"
+			state "default", label:'Off', action:"off", backgroundColor:"#ffffff", icon: "https://raw.githubusercontent.com/ClassicGOD/SmartThingsPublic/master/devicetypes/classicgod/fibaro-heat-controller.src/images/miami_off.png"
+			state "off", label:'Off', action:"refreshMode", backgroundColor:"#cccccc", icon: "https://raw.githubusercontent.com/ClassicGOD/SmartThingsPublic/master/devicetypes/classicgod/fibaro-heat-controller.src/images/miami_off.png"
 		}
 		standardTile("auto", "device.thermostatMode", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Auto', action:"auto", backgroundColor:"#ffffff"
-			state "auto", label:'Auto', action:"refreshMode", backgroundColor:"#00a0dc"
+			state "default", label:'Auto', action:"auto", backgroundColor:"#ffffff", icon: "https://raw.githubusercontent.com/ClassicGOD/SmartThingsPublic/master/devicetypes/classicgod/fibaro-heat-controller.src/images/miami_18.png"
+			state "auto", label:'Auto', action:"refreshMode", backgroundColor:"#00a0dc", icon: "https://raw.githubusercontent.com/ClassicGOD/SmartThingsPublic/master/devicetypes/classicgod/fibaro-heat-controller.src/images/miami_18.png"
 		}
 		standardTile("heat", "device.thermostatMode", decoration: "flat", width: 2, height: 2) {
-			state "default", label:'Heat', action:"heat", backgroundColor:"#ffffff"
-			state "heat", label:'Heat', action:"refreshMode", backgroundColor:"#e86d13"
+			state "default", label:'Heat', action:"heat", backgroundColor:"#ffffff", icon: "https://raw.githubusercontent.com/ClassicGOD/SmartThingsPublic/master/devicetypes/classicgod/fibaro-heat-controller.src/images/miami_max.png"
+			state "heat", label:'Heat', action:"refreshMode", backgroundColor:"#e86d13", icon: "https://raw.githubusercontent.com/ClassicGOD/SmartThingsPublic/master/devicetypes/classicgod/fibaro-heat-controller.src/images/miami_max.png"
 		}
-		//standardTile("sensor", "device.sensor", decoration: "flat", width: 2, height: 2) {
-		//	state "default", label: 'No Sensor', action:"refreshParam3", backgroundColor:"#ffffff"
-		//	state "OK", label: 'Sensor OK', action:"refreshParam3", backgroundColor:"#00a0dc"
-		//}
 		valueTile("notification", "device.notification", decoration: "flat", width: 4, height: 2) {
 			state "notification", label: '${currentValue}', action:"resetNotification"
 		}
@@ -75,29 +71,13 @@ metadata {
 	preferences {
 	
 		input (
-			title: "Fibaro Wall Plug manual",
+			title: "Fibaro Heat Controller manual",
 			description: "Tap to view the manual.",
-			image: "http://manuals.fibaro.com/wp-content/uploads/2017/02/wp_icon.png",
-			url: "http://manuals.fibaro.com/content/manuals/en/FGWPEF-102/FGWPEF-102-EN-A-v2.0.pdf",
+			image: "https://manuals.fibaro.com/wp-content/uploads/2017/10/hear_controller.png",
+			url: "https://manuals.fibaro.com/content/manuals/en/FGT-001/FGT-001-EN-T-v1.0.pdf",
 			type: "href",
 			element: "href"
 		)
-		
-		/*input (
-			title: "1. Override Schedule duration",
-			description: "This parameter determines duration of Override Schedule after turning the knob while normal schedule is active (set by Schedule CC).",
-			type: "paragraph",
-			element: "paragraph"
-		)
-		input (
-			name: "overrideDuration",
-			title: null,
-			description: "Default: 240" ,
-			type: number,
-			range: "10..10000",
-			defaultValue: 240,
-			required: false
-		)*/
 		input (
 			title: "2. Additional functions",
 			description: "This parameter allows to enable different additional functions of the device.",
@@ -194,7 +174,7 @@ def refreshBattery() {
 	def cmds = []
 	cmds << [zwave.batteryV1.batteryGet(), 1]
 	cmds << [zwave.batteryV1.batteryGet(), 2]
-    cmds << [zwave.sensorMultilevelV5.sensorMultilevelGet(), 2]
+	cmds << [zwave.sensorMultilevelV5.sensorMultilevelGet(), 2]
 	encapSequence(cmds,3500)
 }
 
@@ -366,7 +346,7 @@ def zwaveEvent(physicalgraph.zwave.commands.multichannelassociationv2.MultiChann
 
 //event handlers
 def zwaveEvent(physicalgraph.zwave.commands.basicv1.BasicReport cmd) {
-	//ignore
+	logging("${device.displayName} - BasicReport received, ignored.","info")
 }
 
 def zwaveEvent(physicalgraph.zwave.commands.thermostatmodev2.ThermostatModeReport cmd) {
