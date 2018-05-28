@@ -146,9 +146,9 @@ def setMode(String mode) {
 	def cmds = []
 	def valList = [off: 0, auto: 1, heat: 31]
 	sendEvent([name: "thermostatMode", value: mode])
-	log.debug valList[state]
-	cmds << response(encap(zwave.thermostatModeV2.thermostatModeSet(mode: valList[mode])));
-	cmds << response(encap(zwave.thermostatModeV2.thermostatModeGet()));
+	log.debug valList[mode]
+	cmds << response(encap(zwave.thermostatModeV2.thermostatModeSet(mode: valList[mode]),1));
+	cmds << response(encap(zwave.thermostatModeV2.thermostatModeGet(),1));
 	sendHubCommand(cmds,3000)
 }
 
@@ -156,7 +156,7 @@ def refreshMode() {
 	logging("Executing refreshMode($mode)","info")
 	def cmds = []
 	sendEvent([name: "thermostatMode", value: null])
-	cmds << response(encap(zwave.thermostatModeV2.thermostatModeGet()));
+	cmds << response(encap(zwave.thermostatModeV2.thermostatModeGet(),1));
 	sendHubCommand(cmds,1000)
 }
 
@@ -185,7 +185,7 @@ def updated() {
 	if ( state.lastUpdated && (now() - state.lastUpdated) < 500 ) return
 	def cmds = []
 	logging("${device.displayName} - Executing updated()","info")
-	runIn(5,"syncStart")
+	runIn(10,"syncStart")
 	state.lastUpdated = now()
 	configure()
 }
@@ -197,6 +197,7 @@ def configure() {
 	cmds << response(encap(zwave.multiChannelAssociationV2.multiChannelAssociationGet(groupingIdentifier: 1)))
 	cmds << response(encap(zwave.clockV1.clockSet(hour: currentDate.format("H", location.timeZone) as Short, minute: currentDate.format("m", location.timeZone) as Short, weekday: currentDate.format("u", location.timeZone) as Short)))
 	cmds << response(encap(zwave.configurationV2.configurationGet(parameterNumber: 3)))
+	
 	sendHubCommand(cmds,3000)
 }
 
@@ -302,7 +303,7 @@ private updateSensor() {
 }
 
 //event handlers related to configuration and sync
-def zwaveEvent(physicalgraph.zwave.commands.configurationv2.ConfigurationReport cmd) {
+def zwaveEvent(physicalgraph.zwave.commands.configurationv2.ConfigurationReport cmd, ep = null) {
 	log.debug cmd
 	if ( cmd.parameterNumber == 3 ) {
 		sendEvent(name: "param3", value: cmd.scaledConfigurationValue, displayed: false);
@@ -349,7 +350,7 @@ def zwaveEvent(physicalgraph.zwave.commands.basicv1.BasicReport cmd) {
 	logging("${device.displayName} - BasicReport received, ignored.","info")
 }
 
-def zwaveEvent(physicalgraph.zwave.commands.thermostatmodev2.ThermostatModeReport cmd) {
+def zwaveEvent(physicalgraph.zwave.commands.thermostatmodev2.ThermostatModeReport cmd, ep = null) {
 	logging("${device.displayName} - ThermostatModeReport received, mode: ${cmd.mode}","info")
 	switch (cmd.mode) {
 		case 0: sendEvent([name: "thermostatMode", value: "off"]); break;
@@ -358,7 +359,7 @@ def zwaveEvent(physicalgraph.zwave.commands.thermostatmodev2.ThermostatModeRepor
 	}
 }
 
-def zwaveEvent(physicalgraph.zwave.commands.thermostatsetpointv2.ThermostatSetpointReport cmd) {
+def zwaveEvent(physicalgraph.zwave.commands.thermostatsetpointv2.ThermostatSetpointReport cmd, ep = null) {
 	logging("${device.displayName} - ThermostatSetpointReport received, cmd: ${cmd}","info")
 	def cmdScale = cmd.scale == 1 ? "F" : "C"
 	sendEvent(name: "thermostatSetpoint", unit: getTemperatureScale(), value: convertTemperatureIfNeeded(cmd.scaledValue, cmdScale, cmd.precision).toFloat() as Integer, displayed: true)
@@ -412,7 +413,7 @@ private removeItem(String currentNotifications, String itemToRemove) {
 	return tempItems.join('\n')
 }
 
-def zwaveEvent(physicalgraph.zwave.commands.meterv3.MeterReport cmd) {
+def zwaveEvent(physicalgraph.zwave.commands.meterv3.MeterReport cmd, ep = null) {
 	logging("${device.displayName} - MeterReport received, value: ${cmd.scaledMeterValue} scale: ${cmd.scale}","info")
 	switch (cmd.scale) {
 		case 0: sendEvent([name: "energy", value: cmd.scaledMeterValue, unit: "kWh"]); break;
