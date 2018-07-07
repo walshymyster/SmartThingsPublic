@@ -350,9 +350,9 @@ private parameterMap() {[
 		descr: "Allows to turn off the controlled device in case of exceeding the defined power; 1-3000 W.\n0 - function inactive\n10-30000 (1.0-3000.0W, step 0.1W)"],
 	[key: "standardPowerReports", num: 11, size: 1, type: "number", def: 15, min: 1, max: 100, title: "Power reporting", 
 		descr: "This parameter determines the minimum percentage change in active power that will result in sending a power report.\n1-99 - power change in percent\n100 - reports are disabled"], 
-	[key: "periodicPowerReports", num: 13, size: 2, type: "number", def: 3600, min: 0, max: 32400, title: "Periodic energy reports", 
+	[key: "periodicPowerReports", num: 13, size: 2, type: "number", def: 3600, min: 0, max: 32400, title: "Periodic power reports", 
 		descr: "Time period between independent reports.\n0 - periodic reports inactive\n5-32400 (in seconds)"], 
-	[key: "periodicEnergyReports", num: 14, size: 2, type: "number", def: 3600, min: 0, max: 32400, title: "Periodic power reports", 
+	[key: "periodicEnergyReports", num: 14, size: 2, type: "number", def: 3600, min: 0, max: 32400, title: "Periodic energy reports", 
 		descr: "Time period between independent reports.\n0 - periodic reports inactive\n5-32400 (in seconds)"], 
 	[key: "ringColorOn", num: 41, size: 1, type: "enum", options: [
 		0: "0 - Off",
