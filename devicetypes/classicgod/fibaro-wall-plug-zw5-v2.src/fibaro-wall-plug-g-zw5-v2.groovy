@@ -1,6 +1,5 @@
 /**
  *  Fibaro Wall Plug G ZW5
- *  Requires: Fibaro Double Switch 2 Child Device
  *
  *  Copyright 2017 Artur Draga
  *
