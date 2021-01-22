@@ -1,6 +1,7 @@
 /**
  *  "Xiaomi Magic Cube Controller"
  *
+ *
  *  Author: Artur Draga
  *	
  * 	Based on code by: Oleg "DroidSector" Smirnov
